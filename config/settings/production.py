@@ -10,29 +10,6 @@ ALLOWED_HOSTS = env.list(
     "DJANGO_ALLOWED_HOSTS", default=["kayvonseif.me/chatalexia", "chatalexia"]
 )
 
-# DATABASES
-# ------------------------------------------------------------------------------
-DATABASES["default"] = env.db("DATABASE_URL")  # noqa: F405
-DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa: F405
-DATABASES["default"]["CONN_MAX_AGE"] = env.int(  # noqa: F405
-    "CONN_MAX_AGE", default=60
-)
-
-# CACHES
-# ------------------------------------------------------------------------------
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_URL"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # Mimicing memcache behavior.
-            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
-            "IGNORE_EXCEPTIONS": True,
-        },
-    }
-}
-
 # SECURITY
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
@@ -101,47 +78,6 @@ EMAIL_SUBJECT_PREFIX = env(
     "DJANGO_EMAIL_SUBJECT_PREFIX", default="[ChatAlexia]"
 )
 
-# ADMIN
-# ------------------------------------------------------------------------------
-# Django Admin URL regex.
-ADMIN_URL = env("DJANGO_ADMIN_URL")
-
-# Anymail (Mailgun)
-# ------------------------------------------------------------------------------
-# https://anymail.readthedocs.io/en/stable/installation/#installing-anymail
-INSTALLED_APPS += ["anymail"]  # noqa: F405
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-# https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
-ANYMAIL = {
-    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
-    "MAILGUN_API_URL": env(
-        "MAILGUN_API_URL", default="https://api.mailgun.net/v3"
-    ),
-}
-
-# django-compressor
-# ------------------------------------------------------------------------------
-# https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_ENABLED
-COMPRESS_ENABLED = env.bool("COMPRESS_ENABLED", default=True)
-# https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
-COMPRESS_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-# https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_URL
-COMPRESS_URL = STATIC_URL  # noqa: F405
-
-# Collectfast
-# ------------------------------------------------------------------------------
-# https://github.com/antonagestam/collectfast#installation
-INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
-# LOGGING
-# ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#logging
-# See https://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -182,6 +118,3 @@ LOGGING = {
         },
     },
 }
-
-# Your stuff...
-# ------------------------------------------------------------------------------
