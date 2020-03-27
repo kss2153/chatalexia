@@ -2,24 +2,58 @@
 {% block title %}{% block head_title %}Chat Rooms{% endblock head_title %}{% endblock title %}
 
 {% block content %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
+
+<div class="row rounded-lg overflow-hidden shadow">
+    <!-- Chat Box-->
+    <div class="col-12 px-0">
+        <div class="bg-gray px-4 py-2 bg-light">
+        <p class="h5 mb-0 py-1">{{ room_name }}</p>
+    </div>
+
+      <div id="chat-log" class="px-4 py-5 chat-box bg-white">
+        <!-- Sender Message-->
+
+
+      </div>
+
+      <!-- Typing area -->
+      <div class="bg-light">
+        <div class="input-group">
+          <input id="chat-message-input" type="text" placeholder="Type a message" class="form-control rounded-0 border-0 py-4 bg-light">
+          <div class="input-group-append">
+            <button id="chat-message-submit" type="button" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
             //'ws://localhost:8000'
             'wss://kayvonseif.me/chatalexia'
-            + '/ws/chat/'
-            + roomName
+            + '/ws/chat/{{room_name}}'
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            var msg = `<div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+                  <div class="media-body ml-3">
+                    <div class="bg-light rounded py-2 px-3 mb-2">
+                      <p class="text-small mb-0 text-muted">${data.message}</p>
+                    </div>
+                    <p class="small text-muted">${data.user_from}</p>
+                  </div>
+                </div>`
+            if (data.user_from == '{{ username }}') {
+                msg = `<div class="media w-50 ml-auto mb-3"><div class="media-body"><div class="bg-primary rounded py-2 px-3 mb-2"><p class="text-small mb-0 text-white">${data.message}</p></div><p class="small text-muted">${data.user_from}</p></div></div>`;
+            }
+            document.querySelector('#chat-log').innerHTML += msg;
+            var objDiv = document.querySelector('#chat-log');
+            objDiv.scrollTop = objDiv.scrollHeight;
         };
 
         chatSocket.onclose = function(e) {
@@ -37,7 +71,8 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'user_from': '{{ username }}'
             }));
             messageInputDom.value = '';
         };

@@ -14,7 +14,8 @@ chat_rooms_view = ChatRoomsView.as_view()
 class ChatView(LoginRequiredMixin, View):
     def get(self, request, room_name):
         return render(request, 'chat/room.html', {
-            'room_name': room_name
+            'room_name': room_name,
+            'username': request.user.username
         })
 
 
