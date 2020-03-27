@@ -11,7 +11,7 @@ import os
 import sys
 import django
 
-from django.core.asgi import get_asgi_application
+from channels.routing import get_default_application
 
 # This allows easy placement of apps within the interior
 # chatalexia directory.
@@ -34,7 +34,7 @@ django.setup()
 
 # This application object is used by any ASGI server configured to use this
 # file.
-application = get_asgi_application()
+application = get_default_application()
 # Apply ASGI middleware here.
 # from helloworld.asgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
