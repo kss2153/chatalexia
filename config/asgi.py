@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/dev/howto/deployment/asgi/
 
 import os
 import sys
+import django
 
 from django.core.asgi import get_asgi_application
-
 
 # This allows easy placement of apps within the interior
 # chatalexia directory.
@@ -28,6 +28,9 @@ sys.path.append(os.path.join(app_path, "chatalexia"))
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE", "config.settings.production"
 )
+
+django.setup()
+
 
 # This application object is used by any ASGI server configured to use this
 # file.
