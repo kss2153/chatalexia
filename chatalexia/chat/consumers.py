@@ -4,9 +4,18 @@ from channels.generic.websocket import WebsocketConsumer
 
 
 class ChatConsumer(WebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.room_name = None
+        self.room_group_name = None
+        self.user = None
+
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
+        self.user = self.scope['user']
+        if not self.user.is_authenticated:
+            return
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
