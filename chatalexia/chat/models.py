@@ -6,6 +6,7 @@ from chatalexia.users.models import User
 class Message(models.Model):
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Msg sent from")
     text = models.CharField('Message text', max_length=255)
+    sent = models.DateTimeField()
 
 
 class Room(models.Model):
